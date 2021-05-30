@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "./services/api";
 
 function App() {
   const [username, setUsername] = useState("brunogoldoni");
   const [userData, setUserData] = useState({});
 
+  useEffect(() => {
+    const localStorageUserData = sessionStorage.getItem(
+      "@reactapp/githubUserData"
+    );
+
+    setUserData(JSON.parse(localStorageUserData) || {});
+  }, []);
+
   async function getUserGithubData() {
     const { data } = await api.get(username);
+
+    sessionStorage.setItem("@reactapp/githubUserData", JSON.stringify(data));
 
     setUserData(data);
   }
